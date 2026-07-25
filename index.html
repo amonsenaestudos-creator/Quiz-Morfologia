@@ -12,7 +12,7 @@
 
   <div class="quiz-container">
     <div id="welcome-box" class="card-box">
-      <div class="mascot"></div>
+      <!-- <div class="mascot">📚</div> -->
       <h1>Quiz de Morfologia</h1>
       <p class="subtitle">Mostre o quanto você sabe sobre a estrutura das palavras!</p>
       
@@ -54,10 +54,33 @@
     </div>
 
     <div id="result-box" class="card-box hide">
-      <div id="result-icon" class="mascot">🏆</div>
-      <h1>Boa tentativa!</h1>
+      <div class="result-badge">
+        <div id="result-icon" class="mascot-result">🏆</div>
+      </div>
+      
+      <h1 id="result-title">Resultado Final</h1>
+      
+      <div id="score-details" class="score-grid">
+        <div class="stat-card">
+          <span class="stat-label">Acertos</span>
+          <span id="correct-count" class="stat-value correct-color">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Erros</span>
+          <span id="wrong-count" class="stat-value wrong-color">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Desempenho</span>
+          <span id="percentage-score" class="stat-value percent-color">0%</span>
+        </div>
+      </div>
+
       <p id="score" class="score-text"></p>
+      
       <button id="restart-btn" class="btn-action btn-restart">🔄 Jogar De Novo!</button>
+
+      <p class="credits">Feito por: Ancelmo, Heitor e Amon</p>
+
     </div>
 
   </div>
