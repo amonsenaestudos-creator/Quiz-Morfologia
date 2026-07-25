@@ -1,271 +1,301 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Fredoka', cursive, sans-serif;
+// 1. Perguntas Didáticas de Português com Explicativo (Dica)
+const questions = [
+  {
+    question: "Na palavra infeliz, o elemento in- é:",
+    explanation: "💡 Lembre-se: O prefixo é a parte da palavra que vem antes do radical!",
+    answers: [
+      { text: "Sufixo", correct: false },
+      { text: "Prefixo", correct: true },
+      { text: "Radical", correct: false },
+      { text: "Desinência", correct: false }
+    ]
+  },
+  {
+    question: "Na palavra floricultura, o elemento -icultura é:",
+    explanation: "💡 Lembre-se: O sufixo é a parte da palavra que vem depois do radical!",
+    answers: [
+      { text: "Prefixo", correct: false },
+      { text: "Radical", correct: false },
+      { text: "Sufixo", correct: true },
+      { text: "Desinência", correct: false }
+    ]
+  },
+  {
+    question: "Por quantos morfemas é formada a palavra GATO?",
+    explanation: "💡 A palavra gato é formada por dois morfemas; gato = gat- + -o!",
+    answers: [
+      { text: "1", correct: false },
+      { text: "2", correct: true },
+      { text: "3", correct: false },
+      { text: "4", correct: false }
+    ]
+  },
+  {
+    question: "Qual das opções abaixo NÃO é um elemento mórfico?",
+    explanation: "💡 Um fonema é a menor unidade sonora de uma língua e não é um elemento mórfico!",
+    answers: [
+      { text: "Desinência", correct: false },
+      { text: "Vogal temática", correct: false },
+      { text: "Radical", correct: false },
+      { text: "Fonema", correct: true }
+    ]
+  },
+  {
+    question: "Qual das opções abaixo NÃO pertence à mesma família de palavras do radical “flor-”?",
+    explanation: "💡 O radical da palavra floresta é florest-",
+    answers: [
+      { text: "Floresta", correct: true },
+      { text: "Floral", correct: false },
+      { text: "Floricultura", correct: false },
+      { text: "Florista", correct: false }
+    ]
+  },
+  {
+    question: "Em partíssemos, a desinência -sse- indica:",
+    explanation: "💡 Na palavra 'partíssemos', a desinência '-sse-' indica o modo e o tempo",
+    answers: [
+      { text: "Número e pessoa", correct: false },
+      { text: "Modo e tempo", correct: true },
+      { text: "Gênero e número", correct: false },
+      { text: "Apenas número", correct: false }
+    ]
+  },
+  {
+    question: "Toda palavra possui obrigatoriamente prefixo e sufixo?",
+    explanation: "💡 Não é necessário que toda palavra possua prefixo e sufixo.",
+    isBoolean: true, // Define o layout de 2 quadrados lado a lado
+    answers: [
+      { text: "SIM", correct: false },
+      { text: "NÃO", correct: true }
+    ]
+  },
+  {
+    question: "A análise correta da palavra 'deslealdade' é?",
+    explanation: "💡 Na palavra 'deslealdade', o prefixo é 'des-', o radical é 'leal' e o sufixo é '-dade'.",
+    answers: [
+      { text: "Radical + desinência verbal", correct: false },
+      { text: "Prefixo + radical + sufixo", correct: true },
+      { text: "Apenas radical", correct: false },
+      { text: "Prefixo + vogal temática + desinência", correct: false }
+    ]
+  },
+  {
+    question: "Em pedreiro, o elemento -eiro é?",
+    explanation: "💡 Na palavra 'pedreiro', o elemento '-eiro' é um sufixo.",
+    answers: [
+      { text: "Prefixo", correct: false },
+      { text: "Sufixo", correct: true },
+      { text: "Desinência", correct: false },
+      { text: "Vogal temática", correct: false }
+    ]
+  },
+  {
+    question: "Assinale a alternativa em que o elemento destacado é uma vogal temática",
+    explanation: "💡 O 'a' em cantar é uma vogal temática",
+    answers: [
+      { text: "cant'a'r", correct: true },
+      { text: "menin'a's", correct: false },
+      { text: "feliz'mente'", correct: false },
+      { text: "'in'feliz", correct: false }
+    ]
+  }
+];
+
+// 2. Elementos DOM
+const welcomeBox = document.getElementById("welcome-box");
+const startForm = document.getElementById("start-form");
+const usernameInput = document.getElementById("username-input");
+
+const quizBox = document.getElementById("quiz-box");
+const displayUsername = document.getElementById("display-username");
+const questionElement = document.getElementById("question");
+const optionsElement = document.getElementById("options");
+const feedbackText = document.getElementById("feedback-text");
+const progressBar = document.getElementById("progress-bar");
+const nextButton = document.getElementById("next-btn");
+const timerText = document.getElementById("timer-text");
+
+const resultBox = document.getElementById("result-box");
+const resultIcon = document.getElementById("result-icon");
+const scoreElement = document.getElementById("score");
+const restartButton = document.getElementById("restart-btn");
+
+let currentQuestionIndex = 0;
+let score = 0;
+let userName = "";
+
+// Configuração do Timer
+const TIME_LIMIT = 15; // Tempo em segundos para cada pergunta
+let timeLeft = TIME_LIMIT;
+let timerInterval = null;
+
+// 3. Iniciar com o Nome do Aluno
+startForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  userName = usernameInput.value.trim();
+
+  if (userName) {
+    displayUsername.innerText = userName;
+    welcomeBox.classList.add("hide");
+    quizBox.classList.remove("hide");
+    startQuiz();
+  }
+});
+
+function startQuiz() {
+  currentQuestionIndex = 0;
+  score = 0;
+  resultBox.classList.add("hide");
+  quizBox.classList.remove("hide");
+  showQuestion();
 }
 
-body {
-  background: linear-gradient(135deg, #e3e7e4 0%, #f6f7f5 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
+function showQuestion() {
+  resetState();
+  let currentQuestion = questions[currentQuestionIndex];
+  
+  // Atualiza barra de progresso
+  const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+  progressBar.style.width = `${progressPercent}%`;
+
+  questionElement.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+
+  // Aplica classe de grade caso a pergunta seja do tipo Sim/Não
+  if (currentQuestion.isBoolean) {
+    optionsElement.classList.add("boolean-grid");
+  } else {
+    optionsElement.classList.remove("boolean-grid");
+  }
+
+  currentQuestion.answers.forEach(answer => {
+    const button = document.createElement("button");
+    button.innerText = answer.text;
+    button.classList.add("btn-option");
+
+    // Adiciona estilização específica para SIM e NÃO
+    if (currentQuestion.isBoolean) {
+      if (answer.text.toUpperCase().includes("SIM")) {
+        button.classList.add("btn-yes");
+      } else {
+        button.classList.add("btn-no");
+      }
+    }
+
+    if (answer.correct) {
+      button.dataset.correct = answer.correct;
+    }
+    button.addEventListener("click", selectAnswer);
+    optionsElement.appendChild(button);
+  });
+
+  startTimer();
 }
 
-.quiz-container {
-  width: 100%;
-  max-width: 520px;
+function resetState() {
+  clearInterval(timerInterval);
+  nextButton.classList.add("hide");
+  feedbackText.classList.add("hide");
+  while (optionsElement.firstChild) {
+    optionsElement.removeChild(optionsElement.firstChild);
+  }
 }
 
-/* Cartão Principal */
-.card-box {
-  background-color: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 12px 0px #70a1ff, 0 15px 25px rgba(0, 0, 0, 0.15);
-  border: 4px solid #eeecec;
-  padding: 30px 25px;
-  text-align: center;
-  position: relative;
-  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+function startTimer() {
+  timeLeft = TIME_LIMIT;
+  timerText.innerText = timeLeft;
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerText.innerText = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timeOut();
+    }
+  }, 1000);
 }
 
-@keyframes popIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+function timeOut() {
+  const currentQuestion = questions[currentQuestionIndex];
+  
+  // Revela explicação pedagógica indicando que o tempo acabou
+  feedbackText.innerText = "⏰ Tempo esgotado! " + currentQuestion.explanation;
+  feedbackText.classList.remove("hide");
+
+  // Destaca a resposta correta e desabilita os botões
+  Array.from(optionsElement.children).forEach(button => {
+    if (button.dataset.correct === "true") {
+      button.classList.add("correct");
+    }
+    button.disabled = true;
+  });
+
+  nextButton.classList.remove("hide");
 }
 
-.mascot {
-  font-size: 4rem;
-  margin-bottom: 10px;
-  animation: bounce 2s infinite;
+function selectAnswer(e) {
+  clearInterval(timerInterval); // Para o contador assim que responder
+  
+  const selectedBtn = e.target;
+  const isCorrect = selectedBtn.dataset.correct === "true";
+  const currentQuestion = questions[currentQuestionIndex];
+
+  if (isCorrect) {
+    selectedBtn.classList.add("correct");
+    score++;
+  } else {
+    selectedBtn.classList.add("wrong");
+  }
+
+  // Revela explicação pedagógica
+  feedbackText.innerText = currentQuestion.explanation;
+  feedbackText.classList.remove("hide");
+
+  // Destaca a certa e desabilita cliques
+  Array.from(optionsElement.children).forEach(button => {
+    if (button.dataset.correct === "true") {
+      button.classList.add("correct");
+    }
+    button.disabled = true;
+  });
+
+  nextButton.classList.remove("hide");
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+function handleNextButton() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < questions.length) {
+    showQuestion();
+  } else {
+    showScore();
+  }
 }
 
-h1 {
-  font-size: 1.8rem;
-  color: #fdd700;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 0px #b38a06;
+function showScore() {
+  clearInterval(timerInterval);
+  quizBox.classList.add("hide");
+  resultBox.classList.remove("hide");
+
+  let percentage = (score / questions.length) * 100;
+
+  if (percentage >= 80) {
+    scoreElement.innerHTML = `Sensacional, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas!<br>Você é um Mestre da Língua Portuguesa! 🎈`;
+  } else if (percentage >= 50) {
+    scoreElement.innerHTML = `Muito bem, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas.<br>Continue estudando para tirar nota 10! 📖`;
+  } else if (percentage > 30) {
+    scoreElement.innerHTML = `Estude mais, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas.<br>Continue estudando para tirar nota 10! 📖`;
+  } else {
+    scoreElement.innerHTML = `Bom intento, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong>.<br>Que tal jogar de novo para praticar mais? 😉`;
+  }
 }
 
-h2 {
-  font-size: 1.35rem;
-  color: #2f3542;
-  margin-bottom: 20px;
-  background-color: #eccc68;
-  padding: 12px;
-  border-radius: 16px;
-  box-shadow: 0 4px 0 #e0a927;
-}
+// 4. Listeners
+nextButton.addEventListener("click", () => {
+  if (currentQuestionIndex < questions.length) {
+    handleNextButton();
+  } else {
+    startQuiz();
+  }
+});
 
-.subtitle {
-  color: #747d8c;
-  font-size: 1rem;
-  margin-bottom: 20px;
-}
-
-/* Form e Campo de Nome */
-label {
-  display: block;
-  font-size: 1.1rem;
-  color: #2f3542;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-#username-input {
-  width: 100%;
-  padding: 14px;
-  font-size: 1.1rem;
-  border: 3px solid #70a1ff;
-  border-radius: 16px;
-  outline: none;
-  text-align: center;
-  margin-bottom: 15px;
-  background-color: #f1f2f6;
-  color: #2f3542;
-}
-
-/* Cabeçalho do Jogador & Temporizador */
-.header-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.user-header {
-  background-color: #ff7f50;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 1rem;
-  box-shadow: 0 4px 0 #e65c00;
-}
-
-.timer-badge {
-  background-color: #ff4757;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 1rem;
-  box-shadow: 0 4px 0 #d63031;
-}
-
-/* Barra de Progresso Didática */
-.progress-bar-container {
-  width: 100%;
-  height: 14px;
-  background-color: #dfe4ea;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  overflow: hidden;
-  border: 2px solid #a4b0be;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background-color: #2ed573;
-  transition: width 0.3s ease;
-}
-
-/* Botões de Opção */
-.options-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 15px;
-}
-
-/* Layout especial para SIM / NÃO em 2 quadrados lado a lado */
-.options-container.boolean-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
-.options-container.boolean-grid .btn-option {
-  height: 110px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.8rem;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 24px;
-}
-
-/* Cor individual para o botão SIM */
-.btn-yes {
-  background-color: #e3f9e5;
-  border-color: #2ed573 !important;
-  color: #2ed573;
-  box-shadow: 0 6px 0 #2ed573 !important;
-}
-
-/* Cor individual para o botão NÃO */
-.btn-no {
-  background-color: #ffeae9;
-  border-color: #ff4757 !important;
-  color: #ff4757;
-  box-shadow: 0 6px 0 #ff4757 !important;
-}
-
-.btn-option {
-  background-color: #f1f2f6;
-  border: 3px solid #ced6e0;
-  border-radius: 16px;
-  padding: 14px 18px;
-  font-size: 1.1rem;
-  color: #2f3542;
-  cursor: pointer;
-  text-align: left;
-  box-shadow: 0 4px 0 #a4b0be;
-  transition: all 0.1s ease;
-}
-
-.btn-option:hover:not([disabled]) {
-  background-color: #eccc68;
-  border-color: #ffa502;
-  box-shadow: 0 4px 0 #e0a927;
-  transform: translateY(-2px);
-}
-
-.btn-option:active:not([disabled]) {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #a4b0be;
-}
-
-.btn-option.correct {
-  background-color: #7bed9f !important;
-  border-color: #2ed573 !important;
-  color: #1e8449 !important;
-  box-shadow: 0 4px 0 #2ed573 !important;
-}
-
-.btn-option.wrong {
-  background-color: #ff7675 !important;
-  border-color: #d63031 !important;
-  color: #841e1e !important;
-  box-shadow: 0 4px 0 #d63031 !important;
-}
-
-/* Caixa de Feedback Didático */
-.feedback-text {
-  font-size: 1rem;
-  padding: 10px;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  background-color: #eccc68;
-  color: #2f3542;
-}
-
-/* Botões de Ação Principais */
-.btn-action {
-  width: 100%;
-  color: white;
-  border: none;
-  border-radius: 18px;
-  padding: 15px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.1s;
-}
-
-.btn-start, .btn-next {
-  background-color: #ff4757;
-  box-shadow: 0 6px 0 #ff6b81;
-}
-
-.btn-start:hover, .btn-next:hover {
-  background-color: #ff6b81;
-}
-
-.btn-restart {
-  background-color: #1e90ff;
-  box-shadow: 0 6px 0 #70a1ff;
-}
-
-.btn-action:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0 transparent;
-}
-
-.hide {
-  display: none !important;
-}
-
-.score-text {
-  font-size: 1.3rem;
-  color: #2f3542;
-  margin-bottom: 25px;
-}
+restartButton.addEventListener("click", startQuiz);
