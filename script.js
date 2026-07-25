@@ -14,7 +14,7 @@ const questions = [
   // 🧩 MINIGAME 1: Puzzle (DESLEALDADE)
   {
     type: "puzzle",
-    question: "Monte a estrutura correta da palavra 'DESLEALDADE'",
+    question: "Forme uma palavra com os morfemas a seguir:",
     explanation: "💡 Lembre-se: A estrutura correta é: Prefixo (DES-) + Radical (LEAL) + Sufixo (-DADE).",
     // Peças embaralhadas para o aluno clicar/ordenar
     pieces: ["(-DADE)", "(DES-)", "(LEAL)"],
@@ -59,8 +59,8 @@ const questions = [
     explanation: "💡 Excelente memória! IN- é um Prefixo e -MENTE é um Sufixo.",
     answers: [
       { text: "a) ao começo", correct: false },
-      { text: "b) ao prefixo", correct: true },
-      { text: "c) ao final", correct: false },
+      { text: "b) ao prefixo", correct: false },
+      { text: "c) ao final", correct: true },
       { text: "d) ao meio", correct: false }
     ]
   },
@@ -128,10 +128,10 @@ const questions = [
     question: "Associe os termos morfológicos aos seus significados:",
     explanation: "💡 Ótimo! Substantivo dá nome às coisas e Verbo indica ação.",
     cards: [
-      { id: 1, text: "SUBSTANTIVO", matchId: 1 },
-      { id: 2, text: "VERBO", matchId: 2 },
-      { id: 3, text: "NOME", matchId: 1 },
-      { id: 4, text: "AÇÃO", matchId: 2 }
+      { id: 1, text: "SUFIXO", matchId: 1 },
+      { id: 2, text: "ÁVEL", matchId: 1 },
+      { id: 3, text: "IN", matchId: 2 },
+      { id: 4, text: "PREFIXO", matchId: 2 }
     ]
   },
 
@@ -153,6 +153,21 @@ const questions = [
       { text: "Desinência", correct: false },
       { text: "Vogal temática", correct: false }
     ]
+  },
+
+  {
+    type: "super-puzzle",
+    question: "Forme uma palavra usando prefixo, radical, vogal temática e sufixo:",
+    explanation: "💡 A palavra correta é: Prefixo (RE-) + Radical (ESTRUTURA) + Sufixo (-ÇÃ) + Desinência/Vogal (-O)!",
+    morphemes: [
+      { text: "ESTRUTURA", type: "radical" },
+      { text: "-ÇÃ", type: "sufixo" },
+      { text: "RE-", type: "prefixo" },
+      { text: "-O", type: "desinencia" },
+      { text: "DES-", type: "distrator" },
+      { text: "-MENTE", type: "distrator" }
+    ],
+    correctOrder: ["RE-", "ESTRUTURA", "-ÇÃ", "-O"]
   }
 ];
 
@@ -191,7 +206,7 @@ let hangmanErrors = 0;
 let memoryFlippedCards = [];
 let memoryMatchedPairs = 0;
 
-const TIME_LIMIT = 20;
+const TIME_LIMIT = 15;
 let timeLeft = TIME_LIMIT;
 let timerInterval = null;
 
@@ -230,6 +245,8 @@ function showQuestion() {
     renderHangmanQuestion(currentQuestion);
   } else if (currentQuestion.type === "memory") {
     renderMemoryQuestion(currentQuestion);
+  } else if (currentQuestion.type === "super-puzzle") {
+    renderSuperPuzzleQuestion(currentQuestion); // <-- ADICIONADO AQUI
   } else {
     renderStandardQuestion(currentQuestion);
   }
@@ -470,6 +487,96 @@ function renderMemoryQuestion(currentQuestion) {
   optionsElement.appendChild(grid);
 }
 
+// 5. Minigame: Super Alquimia Morfológica
+let superPuzzleSelected = [];
+
+function renderSuperPuzzleQuestion(currentQuestion) {
+  optionsElement.classList.remove("boolean-grid");
+  superPuzzleSelected = [];
+
+  const container = document.createElement("div");
+  container.classList.add("super-puzzle-container");
+
+  // Frasco/Vaso de Síntese
+  const flask = document.createElement("div");
+  flask.classList.add("alchemy-flask");
+  
+  const flaskLabel = document.createElement("div");
+  flaskLabel.classList.add("flask-label");
+ 
+
+  const wordDisplay = document.createElement("div");
+  wordDisplay.classList.add("synthesized-word");
+  wordDisplay.innerText = "Clique nas peças para combinar...";
+
+  flask.appendChild(flaskLabel);
+  flask.appendChild(wordDisplay);
+
+  // Botão de Limpar/Resetar Escolha
+  const resetBtn = document.createElement("button");
+  resetBtn.classList.add("btn-reset-flask");
+  resetBtn.innerText = "🧹 Voltar";
+  resetBtn.addEventListener("click", () => {
+    superPuzzleSelected = [];
+    wordDisplay.innerText = "Clique nas peças para combinar...";
+    wordDisplay.classList.remove("glow");
+    Array.from(grid.children).forEach(btn => btn.classList.remove("used"));
+  });
+
+  // Grade de Morfemas
+  const grid = document.createElement("div");
+  grid.classList.add("alchemy-grid");
+
+  // Embaralha as peças do desafio
+  const shuffledMorphemes = [...currentQuestion.morphemes].sort(() => Math.random() - 0.5);
+
+  shuffledMorphemes.forEach(item => {
+    const chip = document.createElement("button");
+    chip.classList.add("morpheme-chip", item.type);
+    chip.innerText = item.text;
+
+    chip.addEventListener("click", () => {
+      if (chip.classList.contains("used") || superPuzzleSelected.length >= currentQuestion.correctOrder.length) return;
+
+      chip.classList.add("used");
+      superPuzzleSelected.push(item.text);
+
+      wordDisplay.innerText = superPuzzleSelected.join("");
+      wordDisplay.classList.add("glow");
+
+      // Quando preencher a quantidade total necessária
+      if (superPuzzleSelected.length === currentQuestion.correctOrder.length) {
+        clearInterval(timerInterval);
+
+        const isCorrect = superPuzzleSelected.every((val, idx) => val === currentQuestion.correctOrder[idx]);
+
+        if (isCorrect) {
+          flask.classList.add("alchemy-success");
+          score++;
+          feedbackText.innerText = "✨ REAÇÃO PERFEITA! " + currentQuestion.explanation;
+        } else {
+          flask.classList.add("alchemy-error");
+          feedbackText.innerText = "💥 FALHA NA SÍNTESE! A combinação correta era: " + currentQuestion.correctOrder.join("") + ". " + currentQuestion.explanation;
+        }
+
+        // Desabilita os botões restantes
+        Array.from(grid.children).forEach(btn => btn.classList.add("used"));
+        resetBtn.disabled = true;
+
+        feedbackText.classList.remove("hide");
+        nextButton.classList.remove("hide");
+      }
+    });
+
+    grid.appendChild(chip);
+  });
+
+  container.appendChild(flask);
+  container.appendChild(resetBtn);
+  container.appendChild(grid);
+  optionsElement.appendChild(container);
+}
+
 function resetState() {
   clearInterval(timerInterval);
   nextButton.classList.add("hide");
@@ -564,14 +671,50 @@ function showScore() {
     resultIcon.innerText = "🏆";
     resultTitle.innerText = "Sensacional!";
     scoreElement.innerHTML = `Parabéns, <strong>${userName}</strong>!<br>Você dominou os conceitos da Morfologia! 🎈`;
+    triggerConfetti();
   } else if (percentage >= 50) {
     resultIcon.innerText = "📖";
     resultTitle.innerText = "Muito Bem!";
     scoreElement.innerHTML = `Bom trabalho, <strong>${userName}</strong>!<br>Continue praticando para alcançar os 100%! ⭐`;
   } else {
     resultIcon.innerText = "💡";
-    resultTitle.innerText = "Bom Intento!";
+    resultTitle.innerText = "Boa Tentativa!";
     scoreElement.innerHTML = `Não desista, <strong>${userName}</strong>!<br>Que tal dar uma revisada no assunto e tentar novamente? 😉`;
+  }
+}
+
+// Função para disparar a animação de confetes
+function triggerConfetti() {
+  if (typeof confetti === "function") {
+    // Explosão central
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+
+    // Disparos contínuos das laterais para um efeito mais espetacular
+    const duration = 2.5 * 1000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 }
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 }
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    })();
   }
 }
 
