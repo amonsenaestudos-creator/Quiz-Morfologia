@@ -6,7 +6,9 @@
 }
 
 body {
-  background: linear-gradient(135deg, #e3e7e4 0%, #f6f7f5 100%);
+  background-color: linear-gradient(135deg, #e3e7e4 0%, #f6f7f5 100%);
+  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -506,4 +508,148 @@ label {
   background-color: #e3f9e5;
   border-color: #2ed573;
   color: #2ed573;
+}
+
+/* 🌟 SUPER PUZZLE: LAB ALQUIMIA MORFOLÓGICA */
+.super-puzzle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.alchemy-flask {
+  background: #ffffff;
+  border: 4px solid #dddddd;
+  border-radius: 20px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.flask-label {
+  color: #a4b0be;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.synthesized-word {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #272727;
+  min-height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 2px;
+}
+
+.synthesized-word.glow {
+  color: #ffffff;
+  text-shadow: 0 0 10px #51bd51;
+}
+
+.alchemy-flask.alchemy-success {
+  border-color: #2ed573;
+  box-shadow: 0 0 20px rgba(46, 213, 115, 0.5);
+  background: #2ed573;
+}
+
+.alchemy-flask.alchemy-success .synthesized-word {
+  color: #ffffff;
+}
+
+.alchemy-flask.alchemy-error {
+  border-color: #ff4757;
+  box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+  background: linear-gradient(135deg, #841e1e 0%, #ff4757 100%);
+}
+
+.alchemy-flask.alchemy-error .synthesized-word {
+  color: #ffffff;
+}
+
+.btn-reset-flask {
+  align-self: center;
+  background-color: #dfe4ea;
+  border: 2px solid #a4b0be;
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #2f3542;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reset-flask:hover:not([disabled]) {
+  background-color: #ced6e0;
+}
+
+.alchemy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.morpheme-chip {
+  padding: 12px 6px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 14px;
+  border: 3px solid #70a1ff;
+  background-color: #ffffff;
+  color: #2f3542;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #70a1ff;
+  transition: all 0.15s ease;
+}
+
+.morpheme-chip:hover:not(.used) {
+  transform: translateY(-3px);
+  filter: brightness(1.05);
+}
+
+.morpheme-chip.prefixo { border-color: #ff7f50; box-shadow: 0 4px 0 #ff7f50; color: #d35400; }
+.morpheme-chip.radical { border-color: #1e90ff; box-shadow: 0 4px 0 #1e90ff; color: #0984e3; }
+.morpheme-chip.sufixo { border-color: #2ed573; box-shadow: 0 4px 0 #2ed573; color: #27ae60; }
+.morpheme-chip.desinencia { border-color: #a55eea; box-shadow: 0 4px 0 #a55eea; color: #8e44ad; }
+.morpheme-chip.distrator { border-color: #ff74f8; box-shadow: 0 4px 0 #e67bd7; color: #f825ff; }
+
+.morpheme-chip.used {
+  opacity: 0.3;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: translateY(2px);
+}
+
+/* LOGO IFBA NO CANTO INFERIOR DIREITO */
+.ifba-logo {
+  position: fixed;
+  bottom: 60px;
+  right: 60px;
+  width: 70px; /* Ajuste o tamanho conforme necessário */
+  height: auto;
+  z-index: 1000;
+  pointer-events: none; /* Garante que não atrapalhe os cliques na tela */
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.ifba-logo {
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Ajuste para telas menores/telemóveis para não cobrir o conteúdo */
+@media (max-width: 600px) {
+  .ifba-logo {
+    width: 80px;
+    bottom: 10px;
+    right: 10px;
+  }
 }
