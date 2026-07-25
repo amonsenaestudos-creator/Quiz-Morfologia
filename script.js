@@ -37,7 +37,7 @@ const questions = [
   {
     type: "hangman",
     question: "Adivinhe o elemento mórfico que contém o significado principal da palavra:",
-    explanation: "💡 Mandou bem! O RADICAL é o elemento base que carrega o significado principal da palavra.",
+    explanation: "💡 Lembre-se: O RADICAL é o elemento base que carrega o significado principal da palavra.",
     secretWord: "RADICAL",
     hint: "Dica: É a base essencial de toda palavra."
   },
@@ -56,7 +56,7 @@ const questions = [
   // 🃏 MINIGAME 3: Jogo da Memória
   {
     question: "Desinência se junta __ de uma palavra para mostrar suas variações.",
-    explanation: "💡 Excelente memória! IN- é um Prefixo e -MENTE é um Sufixo.",
+    explanation: "💡 Lembre-se: IN- é um Prefixo e -MENTE é um Sufixo.",
     answers: [
       { text: "a) ao começo", correct: false },
       { text: "b) ao prefixo", correct: false },
@@ -125,8 +125,8 @@ const questions = [
   // 🃏 MINIGAME 6: Jogo da Memória
   {
     type: "memory",
-    question: "Associe os termos morfológicos aos seus significados:",
-    explanation: "💡 Ótimo! Substantivo dá nome às coisas e Verbo indica ação.",
+    question: "Associe os termos abaixo:",
+    explanation: "💡 O substantivo dá nome às coisas e Verbo indica ação.",
     cards: [
       { id: 1, text: "SUFIXO", matchId: 1 },
       { id: 2, text: "ÁVEL", matchId: 1 },
