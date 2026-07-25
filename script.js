@@ -1,4 +1,4 @@
-// 1. Perguntas Didáticas de Português com Explicativo (Dica)
+// 1. Perguntas Didáticas de Português
 const questions = [
   {
     question: "Na palavra infeliz, o elemento in- é:",
@@ -63,7 +63,7 @@ const questions = [
   {
     question: "Toda palavra possui obrigatoriamente prefixo e sufixo?",
     explanation: "💡 Não é necessário que toda palavra possua prefixo e sufixo.",
-    isBoolean: true, // Define o layout de 2 quadrados lado a lado
+    isBoolean: true,
     answers: [
       { text: "SIM", correct: false },
       { text: "NÃO", correct: true }
@@ -117,19 +117,22 @@ const timerText = document.getElementById("timer-text");
 
 const resultBox = document.getElementById("result-box");
 const resultIcon = document.getElementById("result-icon");
+const resultTitle = document.getElementById("result-title");
 const scoreElement = document.getElementById("score");
 const restartButton = document.getElementById("restart-btn");
+
+const correctCountEl = document.getElementById("correct-count");
+const wrongCountEl = document.getElementById("wrong-count");
+const percentageScoreEl = document.getElementById("percentage-score");
 
 let currentQuestionIndex = 0;
 let score = 0;
 let userName = "";
 
-// Configuração do Timer
-const TIME_LIMIT = 15; // Tempo em segundos para cada pergunta
+const TIME_LIMIT = 15;
 let timeLeft = TIME_LIMIT;
 let timerInterval = null;
 
-// 3. Iniciar com o Nome do Aluno
 startForm.addEventListener("submit", (e) => {
   e.preventDefault();
   userName = usernameInput.value.trim();
@@ -154,13 +157,11 @@ function showQuestion() {
   resetState();
   let currentQuestion = questions[currentQuestionIndex];
   
-  // Atualiza barra de progresso
   const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
   progressBar.style.width = `${progressPercent}%`;
 
   questionElement.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
 
-  // Aplica classe de grade caso a pergunta seja do tipo Sim/Não
   if (currentQuestion.isBoolean) {
     optionsElement.classList.add("boolean-grid");
   } else {
@@ -172,7 +173,6 @@ function showQuestion() {
     button.innerText = answer.text;
     button.classList.add("btn-option");
 
-    // Adiciona estilização específica para SIM e NÃO
     if (currentQuestion.isBoolean) {
       if (answer.text.toUpperCase().includes("SIM")) {
         button.classList.add("btn-yes");
@@ -218,11 +218,9 @@ function startTimer() {
 function timeOut() {
   const currentQuestion = questions[currentQuestionIndex];
   
-  // Revela explicação pedagógica indicando que o tempo acabou
   feedbackText.innerText = "⏰ Tempo esgotado! " + currentQuestion.explanation;
   feedbackText.classList.remove("hide");
 
-  // Destaca a resposta correta e desabilita os botões
   Array.from(optionsElement.children).forEach(button => {
     if (button.dataset.correct === "true") {
       button.classList.add("correct");
@@ -234,7 +232,7 @@ function timeOut() {
 }
 
 function selectAnswer(e) {
-  clearInterval(timerInterval); // Para o contador assim que responder
+  clearInterval(timerInterval);
   
   const selectedBtn = e.target;
   const isCorrect = selectedBtn.dataset.correct === "true";
@@ -247,11 +245,9 @@ function selectAnswer(e) {
     selectedBtn.classList.add("wrong");
   }
 
-  // Revela explicação pedagógica
   feedbackText.innerText = currentQuestion.explanation;
   feedbackText.classList.remove("hide");
 
-  // Destaca a certa e desabilita cliques
   Array.from(optionsElement.children).forEach(button => {
     if (button.dataset.correct === "true") {
       button.classList.add("correct");
@@ -276,20 +272,31 @@ function showScore() {
   quizBox.classList.add("hide");
   resultBox.classList.remove("hide");
 
-  let percentage = (score / questions.length) * 100;
+  const total = questions.length;
+  const wrong = total - score;
+  const percentage = Math.round((score / total) * 100);
 
+  // Atualiza os cartões numéricos
+  correctCountEl.innerText = score;
+  wrongCountEl.innerText = wrong;
+  percentageScoreEl.innerText = `${percentage}%`;
+
+  // Customização dinâmica por nível de acerto
   if (percentage >= 80) {
-    scoreElement.innerHTML = `Sensacional, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas!<br>Você é um Mestre da Língua Portuguesa! 🎈`;
+    resultIcon.innerText = "🏆";
+    resultTitle.innerText = "Sensacional!";
+    scoreElement.innerHTML = `Parabéns, <strong>${userName}</strong>!<br>Você dominou os conceitos da Morfologia! 🎈`;
   } else if (percentage >= 50) {
-    scoreElement.innerHTML = `Muito bem, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas.<br>Continue estudando para tirar nota 10! 📖`;
-  } else if (percentage > 30) {
-    scoreElement.innerHTML = `Estude mais, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas.<br>Continue estudando para tirar nota 10! 📖`;
+    resultIcon.innerText = "📖";
+    resultTitle.innerText = "Muito Bem!";
+    scoreElement.innerHTML = `Bom trabalho, <strong>${userName}</strong>!<br>Continue praticando para alcançar os 100%! ⭐`;
   } else {
-    scoreElement.innerHTML = `Bom intento, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong>.<br>Que tal jogar de novo para praticar mais? 😉`;
+    resultIcon.innerText = "💡";
+    resultTitle.innerText = "Boa Tentativa!";
+    scoreElement.innerHTML = `Não desista, <strong>${userName}</strong>!<br>Que tal dar uma revisada no assunto e tentar novamente? 😉`;
   }
 }
 
-// 4. Listeners
 nextButton.addEventListener("click", () => {
   if (currentQuestionIndex < questions.length) {
     handleNextButton();
