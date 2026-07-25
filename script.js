@@ -1,240 +1,271 @@
-// 1. Perguntas Didáticas de Português com Explicativo (Dica)
-const questions = [
-  {
-    question: "Qual das palavras abaixo é um SUBSTANTIVO (nome de um objeto)?",
-    explanation: "💡 Lembre-se: Substantivo é tudo aquilo que dá nome às coisas, lugares ou objetos!",
-    answers: [
-      { text: "Correr", correct: false },
-      { text: "Bonito", correct: false },
-      { text: "Mochila", correct: true },
-      { text: "Rápido", correct: false }
-    ]
-  },
-  {
-    question: "Qual frase está usando a pontuação correta para uma PERGUNTA?",
-    explanation: "💡 Usamos o ponto de interrogação (?) sempre que fazemos uma pergunta!",
-    answers: [
-      { text: "Você quer brincar comigo.", correct: false },
-      { text: "Você quer brincar comigo!", correct: false },
-      { text: "Você quer brincar comigo?", correct: true },
-      { text: "Você quer brincar comigo,", correct: false }
-    ]
-  },
-  {
-    question: "Qual é o PLURAL correto da palavra 'Cão'?",
-    explanation: "💡 Palavras terminadas em 'ão' costumam fazer plural em 'ões' ou 'ães'!",
-    answers: [
-      { text: "Cãos", correct: false },
-      { text: "Cães", correct: true },
-      { text: "Cões", correct: false },
-      { text: "Cãoses", correct: false }
-    ]
-  },
-  {
-    question: "O que é um ADJETIVO?",
-    explanation: "💡 Adjetivo é a palavra que dá uma qualidade ou característica a algo!",
-    answers: [
-      { text: "Uma palavra que indica ação", correct: false },
-      { text: "Uma qualidade, como 'Alegre' ou 'Grande'", correct: true },
-      { text: "Um número de coisas", correct: false },
-      { text: "O nome de uma cidade", correct: false }
-    ]
-  },
-  {
-    question: "Qual palavra está escrita de forma CORRETA?",
-    explanation: "💡 Usamos 'M' antes de 'P' e 'B'!",
-    answers: [
-      { text: "Conpacto", correct: false },
-      { text: "Tambor", correct: true },
-      { text: "Tanbor", correct: false },
-      { text: "Lamparina... ops, Lanparina", correct: false }
-    ]
-  },
-  {
-    question: "Qual destas palavras é um VERBO (indica uma ação)?",
-    explanation: "💡 Verbo é tudo o que a gente pode fazer, praticar ou agir!",
-    answers: [
-      { text: "Pular", correct: true },
-      { text: "Sapato", correct: false },
-      { text: "Amarelo", correct: false },
-      { text: "Escola", correct: false }
-    ]
-  },
-  {
-    question: "Qual é o SINÔNIMO (palavra com significado parecido) de 'Feliz'?",
-    explanation: "💡 Sinônimos são palavras diferentes que querem dizer quase a mesma coisa!",
-    answers: [
-      { text: "Triste", correct: false },
-      { text: "Alegre", correct: true },
-      { text: "Bravo", correct: false },
-      { text: "Cansado", correct: false }
-    ]
-  },
-  {
-    question: "Qual é o ANTÔNIMO (significado oposto) de 'Quente'?",
-    explanation: "💡 Antônimo é o contrário de uma palavra!",
-    answers: [
-      { text: "Frio", correct: true },
-      { text: "Morno", correct: false },
-      { text: "Fogo", correct: false },
-      { text: "Sol", correct: false }
-    ]
-  },
-  {
-    question: "Quantas SÍLABAS tem a palavra 'BO-NE-CA'?",
-    explanation: "💡 Conte quantas vezes você abre a boca para falar a palavra!",
-    answers: [
-      { text: "2 sílabas", correct: false },
-      { text: "3 sílabas", correct: true },
-      { text: "4 sílabas", correct: false },
-      { text: "1 sílaba", correct: false }
-    ]
-  },
-  {
-    question: "Em qual palavra usamos o 'Ç' (Cê-cedilha)?",
-    explanation: "💡 Nunca usamos Ç no começo de palavras ou antes de 'E' e 'I'!",
-    answers: [
-      { text: "Coraçao", correct: false },
-      { text: "Coração", correct: true },
-      { text: "Çapatos", correct: false },
-      { text: "Çirco", correct: false }
-    ]
-  }
-];
-
-// 2. Elementos DOM
-const welcomeBox = document.getElementById("welcome-box");
-const startForm = document.getElementById("start-form");
-const usernameInput = document.getElementById("username-input");
-
-const quizBox = document.getElementById("quiz-box");
-const displayUsername = document.getElementById("display-username");
-const questionElement = document.getElementById("question");
-const optionsElement = document.getElementById("options");
-const feedbackText = document.getElementById("feedback-text");
-const progressBar = document.getElementById("progress-bar");
-const nextButton = document.getElementById("next-btn");
-
-const resultBox = document.getElementById("result-box");
-const resultIcon = document.getElementById("result-icon");
-const scoreElement = document.getElementById("score");
-const restartButton = document.getElementById("restart-btn");
-
-let currentQuestionIndex = 0;
-let score = 0;
-let userName = "";
-
-// 3. Iniciar com o Nome do Aluno
-startForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  userName = usernameInput.value.trim();
-
-  if (userName) {
-    displayUsername.innerText = userName;
-    welcomeBox.classList.add("hide");
-    quizBox.classList.remove("hide");
-    startQuiz();
-  }
-});
-
-function startQuiz() {
-  currentQuestionIndex = 0;
-  score = 0;
-  resultBox.classList.add("hide");
-  quizBox.classList.remove("hide");
-  showQuestion();
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Fredoka', cursive, sans-serif;
 }
 
-function showQuestion() {
-  resetState();
-  let currentQuestion = questions[currentQuestionIndex];
-  
-  // Atualiza barra de progresso
-  const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
-  progressBar.style.width = `${progressPercent}%`;
-
-  questionElement.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
-
-  currentQuestion.answers.forEach(answer => {
-    const button = document.createElement("button");
-    button.innerText = answer.text;
-    button.classList.add("btn-option");
-    if (answer.correct) {
-      button.dataset.correct = answer.correct;
-    }
-    button.addEventListener("click", selectAnswer);
-    optionsElement.appendChild(button);
-  });
+body {
+  background: linear-gradient(135deg, #e3e7e4 0%, #f6f7f5 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
 }
 
-function resetState() {
-  nextButton.classList.add("hide");
-  feedbackText.classList.add("hide");
-  while (optionsElement.firstChild) {
-    optionsElement.removeChild(optionsElement.firstChild);
-  }
+.quiz-container {
+  width: 100%;
+  max-width: 520px;
 }
 
-function selectAnswer(e) {
-  const selectedBtn = e.target;
-  const isCorrect = selectedBtn.dataset.correct === "true";
-  const currentQuestion = questions[currentQuestionIndex];
-
-  if (isCorrect) {
-    selectedBtn.classList.add("correct");
-    score++;
-  } else {
-    selectedBtn.classList.add("wrong");
-  }
-
-  // Revela explicação pedagógica
-  feedbackText.innerText = currentQuestion.explanation;
-  feedbackText.classList.remove("hide");
-
-  // Destaca a certa e desabilita cliques
-  Array.from(optionsElement.children).forEach(button => {
-    if (button.dataset.correct === "true") {
-      button.classList.add("correct");
-    }
-    button.disabled = true;
-  });
-
-  nextButton.classList.remove("hide");
+/* Cartão Principal */
+.card-box {
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 12px 0px #70a1ff, 0 15px 25px rgba(0, 0, 0, 0.15);
+  border: 4px solid #eeecec;
+  padding: 30px 25px;
+  text-align: center;
+  position: relative;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-function handleNextButton() {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < questions.length) {
-    showQuestion();
-  } else {
-    showScore();
-  }
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-function showScore() {
-  quizBox.classList.add("hide");
-  resultBox.classList.remove("hide");
-
-  let percentage = (score / questions.length) * 100;
-
-  if (percentage >= 80) {
-    scoreElement.innerHTML = `Sensacional, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas!<br>Você é um Mestre da Língua Portuguesa! 🎈`;
-  } else if (percentage >= 50) {
-    scoreElement.innerHTML = `Muito bem, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas.<br>Continue estudando para tirar nota 10! 📖`;
-    } else if (percentage > 30) {
-    scoreElement.innerHTML = `Estude mais, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong> perguntas.<br>Continue estudando para tirar nota 10! 📖`;
-  } else {
-    scoreElement.innerHTML = `Bom intento, <strong>${userName}</strong>!<br>Você acertou <strong>${score}</strong> de <strong>${questions.length}</strong>.<br>Que tal jogar de novo para praticar mais? 😉`;
-  }
+.mascot {
+  font-size: 4rem;
+  margin-bottom: 10px;
+  animation: bounce 2s infinite;
 }
 
-// 4. Listeners
-nextButton.addEventListener("click", () => {
-  if (currentQuestionIndex < questions.length) {
-    handleNextButton();
-  } else {
-    startQuiz();
-  }
-});
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
 
-restartButton.addEventListener("click", startQuiz);
+h1 {
+  font-size: 1.8rem;
+  color: #fdd700;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 0px #b38a06;
+}
+
+h2 {
+  font-size: 1.35rem;
+  color: #2f3542;
+  margin-bottom: 20px;
+  background-color: #eccc68;
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 0 #e0a927;
+}
+
+.subtitle {
+  color: #747d8c;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+/* Form e Campo de Nome */
+label {
+  display: block;
+  font-size: 1.1rem;
+  color: #2f3542;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+#username-input {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.1rem;
+  border: 3px solid #70a1ff;
+  border-radius: 16px;
+  outline: none;
+  text-align: center;
+  margin-bottom: 15px;
+  background-color: #f1f2f6;
+  color: #2f3542;
+}
+
+/* Cabeçalho do Jogador & Temporizador */
+.header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.user-header {
+  background-color: #ff7f50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 1rem;
+  box-shadow: 0 4px 0 #e65c00;
+}
+
+.timer-badge {
+  background-color: #ff4757;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 0 #d63031;
+}
+
+/* Barra de Progresso Didática */
+.progress-bar-container {
+  width: 100%;
+  height: 14px;
+  background-color: #dfe4ea;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 2px solid #a4b0be;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #2ed573;
+  transition: width 0.3s ease;
+}
+
+/* Botões de Opção */
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+/* Layout especial para SIM / NÃO em 2 quadrados lado a lado */
+.options-container.boolean-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.options-container.boolean-grid .btn-option {
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 24px;
+}
+
+/* Cor individual para o botão SIM */
+.btn-yes {
+  background-color: #e3f9e5;
+  border-color: #2ed573 !important;
+  color: #2ed573;
+  box-shadow: 0 6px 0 #2ed573 !important;
+}
+
+/* Cor individual para o botão NÃO */
+.btn-no {
+  background-color: #ffeae9;
+  border-color: #ff4757 !important;
+  color: #ff4757;
+  box-shadow: 0 6px 0 #ff4757 !important;
+}
+
+.btn-option {
+  background-color: #f1f2f6;
+  border: 3px solid #ced6e0;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 1.1rem;
+  color: #2f3542;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 4px 0 #a4b0be;
+  transition: all 0.1s ease;
+}
+
+.btn-option:hover:not([disabled]) {
+  background-color: #eccc68;
+  border-color: #ffa502;
+  box-shadow: 0 4px 0 #e0a927;
+  transform: translateY(-2px);
+}
+
+.btn-option:active:not([disabled]) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #a4b0be;
+}
+
+.btn-option.correct {
+  background-color: #7bed9f !important;
+  border-color: #2ed573 !important;
+  color: #1e8449 !important;
+  box-shadow: 0 4px 0 #2ed573 !important;
+}
+
+.btn-option.wrong {
+  background-color: #ff7675 !important;
+  border-color: #d63031 !important;
+  color: #841e1e !important;
+  box-shadow: 0 4px 0 #d63031 !important;
+}
+
+/* Caixa de Feedback Didático */
+.feedback-text {
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  background-color: #eccc68;
+  color: #2f3542;
+}
+
+/* Botões de Ação Principais */
+.btn-action {
+  width: 100%;
+  color: white;
+  border: none;
+  border-radius: 18px;
+  padding: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.btn-start, .btn-next {
+  background-color: #ff4757;
+  box-shadow: 0 6px 0 #ff6b81;
+}
+
+.btn-start:hover, .btn-next:hover {
+  background-color: #ff6b81;
+}
+
+.btn-restart {
+  background-color: #1e90ff;
+  box-shadow: 0 6px 0 #70a1ff;
+}
+
+.btn-action:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 transparent;
+}
+
+.hide {
+  display: none !important;
+}
+
+.score-text {
+  font-size: 1.3rem;
+  color: #2f3542;
+  margin-bottom: 25px;
+}
