@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz | Morfologia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="2232688.png" type="image/x-icon">
+</head>
+<body>
+
+  <div class="quiz-container">
+    <div id="welcome-box" class="card-box">
+      <div class="mascot"></div>
+      <h1>Quiz de Morfologia</h1>
+      <p class="subtitle">Mostre o quanto você sabe sobre a estrutura das palavras!</p>
+      
+      <form id="start-form">
+        <label for="username-input">Para começar, digite seu nome</label>
+        <input 
+          type="text" 
+          id="username-input" 
+          placeholder="Digite seu nome ou apelido..." 
+          required 
+          autocomplete="off"
+        />
+        <button type="submit" class="btn-action btn-start">Começar Quiz!</button>
+      </form>
+    </div>
+
+    <div id="quiz-box" class="card-box hide">
+      <div class="user-header">
+        <span>Estudante(a): <strong id="display-username"></strong> ⭐</span>
+      </div>
+
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <h2 id="question">Pergunta aqui...</h2>
+      
+      <div id="options" class="options-container">
+        </div>
+
+      <div id="feedback-text" class="feedback-text hide"></div>
+
+      <button id="next-btn" class="btn-action btn-next hide">Próxima Pergunta ➡️</button>
+    </div>
+
+    <div id="result-box" class="card-box hide">
+      <div id="result-icon" class="mascot">🏆</div>
+      <h1>Boa tentativa!</h1>
+      <p id="score" class="score-text"></p>
+      <button id="restart-btn" class="btn-action btn-restart">🔄 Jogar De Novo!</button>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
