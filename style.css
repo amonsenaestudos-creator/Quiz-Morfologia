@@ -1,20 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
-
-:root {
-  --primary: #6c5ce7;
-  --primary-hover: #5b4bc4;
-  --secondary: #00cec9;
-  --success: #00b894;
-  --success-bg: #e6f9f5;
-  --danger: #ff7675;
-  --danger-bg: #ffeaea;
-  --accent: #fdcb6e;
-  --text-dark: #2d3436;
-  --text-muted: #636e72;
-  --bg-gradient: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
-  --card-bg: #ffffff;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -23,7 +6,7 @@
 }
 
 body {
-  background: var(--bg-gradient);
+  background: linear-gradient(135deg, #e3e7e4 0%, #f6f7f5 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,118 +16,111 @@ body {
 
 .quiz-container {
   width: 100%;
-  max-width: 500px;
+  max-width: 520px;
 }
 
 /* Cartão Principal */
 .card-box {
-  background-color: var(--card-bg);
-  border-radius: 28px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  padding: 32px 28px;
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 12px 0px #70a1ff, 0 15px 25px rgba(0, 0, 0, 0.15);
+  border: 4px solid #eeecec;
+  padding: 30px 25px;
   text-align: center;
   position: relative;
   animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes popIn {
-  0% { transform: scale(0.9) translateY(20px); opacity: 0; }
-  100% { transform: scale(1) translateY(0); opacity: 1; }
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .mascot {
-  font-size: 3.5rem;
-  margin-bottom: 12px;
-  display: inline-block;
-  animation: float 3s ease-in-out infinite;
+  font-size: 4rem;
+  margin-bottom: 10px;
+  animation: bounce 2s infinite;
 }
 
-@keyframes float {
+@keyframes bounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-10px); }
 }
 
 h1 {
-  font-size: 1.9rem;
-  color: var(--primary);
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: 1.8rem;
+  color: #fdd700;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 0px #b38a06;
 }
 
 h2 {
-  font-size: 1.25rem;
-  color: var(--text-dark);
+  font-size: 1.35rem;
+  color: #2ed573;
   margin-bottom: 20px;
-  background-color: #f8f9fa;
-  padding: 16px;
-  border-radius: 18px;
-  border: 2px dashed #dfe6e9;
-  line-height: 1.4;
+  background-color: #eccc68;
+  color: #2f3542;
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 0 #e0a927;
 }
 
 .subtitle {
-  color: var(--text-muted);
+  color: #747d8c;
   font-size: 1rem;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 /* Form e Campo de Nome */
 label {
   display: block;
-  font-size: 1rem;
-  color: var(--text-dark);
+  font-size: 1.1rem;
+  color: #2f3542;
   margin-bottom: 10px;
   font-weight: 600;
 }
 
 #username-input {
   width: 100%;
-  padding: 16px;
-  font-size: 1.05rem;
-  border: 2px solid #dfe6e9;
+  padding: 14px;
+  font-size: 1.1rem;
+  border: 3px solid #70a1ff;
   border-radius: 16px;
   outline: none;
   text-align: center;
-  margin-bottom: 18px;
-  background-color: #f8f9fa;
-  color: var(--text-dark);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-#username-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.15);
-  background-color: #fff;
+  margin-bottom: 15px;
+  background-color: #f1f2f6;
+  color: #2f3542;
 }
 
 /* Cabeçalho do Jogador */
 .user-header {
-  background-color: #f1f2f6;
-  color: var(--text-dark);
-  padding: 8px 16px;
+  background-color: #ff7f50;
+  color: white;
+  padding: 8px 15px;
   border-radius: 20px;
   display: inline-block;
-  margin-bottom: 16px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  box-shadow: 0 4px 0 #e65c00;
 }
 
-/* Barra de Progresso */
+/* Barra de Progresso Didática */
 .progress-bar-container {
   width: 100%;
-  height: 12px;
-  background-color: #dfe6e9;
+  height: 14px;
+  background-color: #dfe4ea;
   border-radius: 10px;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   overflow: hidden;
+  border: 2px solid #a4b0be;
 }
 
 .progress-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #00cec9, #00b894);
-  border-radius: 10px;
-  transition: width 0.4s ease-in-out;
+  background-color: #2ed573;
+  transition: width 0.3s ease;
 }
 
 /* Botões de Opção */
@@ -152,63 +128,56 @@ label {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .btn-option {
-  background-color: #f8f9fa;
-  border: 2px solid #e9ecef;
+  background-color: #f1f2f6;
+  border: 3px solid #ced6e0;
   border-radius: 16px;
-  padding: 14px 20px;
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: var(--text-dark);
+  padding: 14px 18px;
+  font-size: 1.1rem;
+  color: #2f3542;
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 #a4b0be;
+  transition: all 0.1s ease;
 }
 
 .btn-option:hover:not([disabled]) {
-  background-color: #fff;
-  border-color: var(--primary);
+  background-color: #eccc68;
+  border-color: #ffa502;
+  box-shadow: 0 4px 0 #e0a927;
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(108, 92, 231, 0.12);
 }
 
 .btn-option:active:not([disabled]) {
-  transform: translateY(0);
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #a4b0be;
 }
 
 .btn-option.correct {
-  background-color: var(--success-bg) !important;
-  border-color: var(--success) !important;
-  color: var(--success) !important;
-  font-weight: 700;
+  background-color: #7bed9f !important;
+  border-color: #2ed573 !important;
+  color: #1e8449 !important;
+  box-shadow: 0 4px 0 #2ed573 !important;
 }
 
 .btn-option.wrong {
-  background-color: var(--danger-bg) !important;
-  border-color: var(--danger) !important;
-  color: #d63031 !important;
-  font-weight: 700;
+  background-color: #ff7675 !important;
+  border-color: #d63031 !important;
+  color: #841e1e !important;
+  box-shadow: 0 4px 0 #d63031 !important;
 }
 
 /* Caixa de Feedback Didático */
 .feedback-text {
-  font-size: 0.95rem;
-  padding: 14px;
-  border-radius: 14px;
-  margin-bottom: 20px;
-  background-color: #fff9db;
-  border: 1px solid #ffe066;
-  color: #856404;
-  line-height: 1.4;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  background-color: #eccc68;
+  color: #2f3542;
 }
 
 /* Botões de Ação Principais */
@@ -216,38 +185,31 @@ label {
   width: 100%;
   color: white;
   border: none;
-  border-radius: 16px;
-  padding: 16px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  border-radius: 18px;
+  padding: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.1s;
 }
 
 .btn-start, .btn-next {
-  background-color: var(--primary);
+  background-color: #ff4757;
+  box-shadow: 0 6px 0 #ff6b81;
 }
 
 .btn-start:hover, .btn-next:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(108, 92, 231, 0.3);
+  background-color: #ff6b81;
 }
 
 .btn-restart {
-  background-color: var(--secondary);
-  color: #2d3436;
-}
-
-.btn-restart:hover {
-  background-color: #00b894;
-  color: white;
-  transform: translateY(-2px);
+  background-color: #1e90ff;
+  box-shadow: 0 6px 0 #70a1ff;
 }
 
 .btn-action:active {
-  transform: translateY(0);
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 transparent;
 }
 
 .hide {
@@ -255,8 +217,7 @@ label {
 }
 
 .score-text {
-  font-size: 1.2rem;
-  color: var(--text-dark);
-  line-height: 1.6;
+  font-size: 1.3rem;
+  color: #2f3542;
   margin-bottom: 25px;
 }
