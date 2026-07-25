@@ -56,10 +56,9 @@ h1 {
 
 h2 {
   font-size: 1.35rem;
-  color: #2ed573;
+  color: #2f3542;
   margin-bottom: 20px;
   background-color: #eccc68;
-  color: #2f3542;
   padding: 12px;
   border-radius: 16px;
   box-shadow: 0 4px 0 #e0a927;
@@ -93,16 +92,31 @@ label {
   color: #2f3542;
 }
 
-/* Cabeçalho do Jogador */
+/* Cabeçalho do Jogador & Temporizador */
+.header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .user-header {
   background-color: #ff7f50;
   color: white;
   padding: 8px 15px;
   border-radius: 20px;
-  display: inline-block;
-  margin-bottom: 15px;
   font-size: 1rem;
   box-shadow: 0 4px 0 #e65c00;
+}
+
+.timer-badge {
+  background-color: #ff4757;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 0 #d63031;
 }
 
 /* Barra de Progresso Didática */
@@ -129,6 +143,40 @@ label {
   flex-direction: column;
   gap: 12px;
   margin-bottom: 15px;
+}
+
+/* Layout especial para SIM / NÃO em 2 quadrados lado a lado */
+.options-container.boolean-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.options-container.boolean-grid .btn-option {
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 24px;
+}
+
+/* Cor individual para o botão SIM */
+.btn-yes {
+  background-color: #e3f9e5;
+  border-color: #2ed573 !important;
+  color: #2ed573;
+  box-shadow: 0 6px 0 #2ed573 !important;
+}
+
+/* Cor individual para o botão NÃO */
+.btn-no {
+  background-color: #ffeae9;
+  border-color: #ff4757 !important;
+  color: #ff4757;
+  box-shadow: 0 6px 0 #ff4757 !important;
 }
 
 .btn-option {
