@@ -1,4 +1,86 @@
-// Perguntas do Quiz (Incluindo 6 Minigames)
+// ==========================================
+// 🔊 SISTEMA DE EFEITOS SONOROS (Web Audio API)
+// ==========================================
+let audioCtx = null;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function playSound(type) {
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+
+    if (type === 'tick') {
+      // Som seco de relógio/metrónomo
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    } else if (type === 'click') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, now);
+      osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    } else if (type === 'correct') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else if (type === 'wrong') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.linearRampToValueAtTime(110, now + 0.2);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now);
+      osc.stop(now + 0.25);
+    } else if (type === 'victory') {
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, index) => {
+        const noteOsc = ctx.createOscillator();
+        const noteGain = ctx.createGain();
+        noteOsc.connect(noteGain);
+        noteGain.connect(ctx.destination);
+
+        noteOsc.type = 'triangle';
+        noteOsc.frequency.setValueAtTime(freq, now + index * 0.12);
+        noteGain.gain.setValueAtTime(0.15, now + index * 0.12);
+        noteGain.gain.linearRampToValueAtTime(0.01, now + index * 0.12 + 0.25);
+
+        noteOsc.start(now + index * 0.12);
+        noteOsc.stop(now + index * 0.12 + 0.25);
+      });
+    }
+  } catch (e) {
+    console.log("Áudio não suportado ou bloqueado pelo navegador.");
+  }
+}
+
+// ==========================================
+// 📋 LISTA DE PERGUNTAS E MINIGAMES
+// ==========================================
 const questions = [
   {
     question: "Na palavra infeliz, o elemento in- é:",
@@ -16,9 +98,7 @@ const questions = [
     type: "puzzle",
     question: "Forme uma palavra com os morfemas a seguir:",
     explanation: "💡 Lembre-se: A estrutura correta é: Prefixo (DES-) + Radical (LEAL) + Sufixo (-DADE).",
-    // Peças embaralhadas para o aluno clicar/ordenar
     pieces: ["(-DADE)", "(DES-)", "(LEAL)"],
-    // Sequência correta esperada
     correctOrder: ["(DES-)", "(LEAL)", "(-DADE)"]
   },
 
@@ -53,7 +133,6 @@ const questions = [
     ]
   },
 
-  // 🃏 MINIGAME 3: Jogo da Memória
   {
     question: "Desinência se junta __ de uma palavra para mostrar suas variações.",
     explanation: "💡 Lembre-se: IN- é um Prefixo e -MENTE é um Sufixo.",
@@ -76,18 +155,6 @@ const questions = [
     ]
   },
 
-
-  {
-    question: "Na palavra infeliz, o elemento in- é:",
-    explanation: "💡 Lembre-se: O prefixo é a parte da palavra que vem antes do radical!",
-    answers: [
-      { text: "Sufixo", correct: false },
-      { text: "Prefixo", correct: true },
-      { text: "Radical", correct: false },
-      { text: "Desinência", correct: false }
-    ]
-  },
-
   {
     question: "Qual das opções abaixo NÃO pertence à mesma família de palavras do radical “flor-”?",
     explanation: "💡 O radical da palavra floresta é florest-",
@@ -99,7 +166,6 @@ const questions = [
     ]
   },
 
-  // 🔤 MINIGAME 5: Forca (PREFIXO)
   {
     question: "Assinale a alternativa em que o elemento destacado é uma vogal temática",
     explanation: "💡 O 'a' em cantar é uma vogal temática",
@@ -122,7 +188,7 @@ const questions = [
     ]
   },
 
-  // 🃏 MINIGAME 6: Jogo da Memória
+  // 🃏 MINIGAME: Jogo da Memória
   {
     type: "memory",
     question: "Associe os termos abaixo:",
@@ -184,6 +250,7 @@ const feedbackText = document.getElementById("feedback-text");
 const progressBar = document.getElementById("progress-bar");
 const nextButton = document.getElementById("next-btn");
 const timerText = document.getElementById("timer-text");
+const timerBox = document.getElementById("timer-box");
 
 const resultBox = document.getElementById("result-box");
 const resultIcon = document.getElementById("result-icon");
@@ -205,6 +272,7 @@ let hangmanGuessedLetters = [];
 let hangmanErrors = 0;
 let memoryFlippedCards = [];
 let memoryMatchedPairs = 0;
+let superPuzzleSelected = [];
 
 const TIME_LIMIT = 15;
 let timeLeft = TIME_LIMIT;
@@ -215,6 +283,7 @@ startForm.addEventListener("submit", (e) => {
   userName = usernameInput.value.trim();
 
   if (userName) {
+    playSound('click');
     displayUsername.innerText = userName;
     welcomeBox.classList.add("hide");
     quizBox.classList.remove("hide");
@@ -246,7 +315,7 @@ function showQuestion() {
   } else if (currentQuestion.type === "memory") {
     renderMemoryQuestion(currentQuestion);
   } else if (currentQuestion.type === "super-puzzle") {
-    renderSuperPuzzleQuestion(currentQuestion); // <-- ADICIONADO AQUI
+    renderSuperPuzzleQuestion(currentQuestion);
   } else {
     renderStandardQuestion(currentQuestion);
   }
@@ -306,6 +375,7 @@ function renderPuzzleQuestion(currentQuestion) {
     piece.addEventListener("click", () => {
       if (piece.classList.contains("selected")) return;
 
+      playSound('click');
       piece.classList.add("selected");
       userPuzzleSelection.push(pieceText);
 
@@ -318,12 +388,15 @@ function renderPuzzleQuestion(currentQuestion) {
 
       if (userPuzzleSelection.length === currentQuestion.pieces.length) {
         clearInterval(timerInterval);
+        if (timerBox) timerBox.classList.remove("warning");
         const isCorrect = userPuzzleSelection.every((val, i) => val === currentQuestion.correctOrder[i]);
         if (isCorrect) {
           dropZone.classList.add("puzzle-correct");
           score++;
+          playSound('correct');
         } else {
           dropZone.classList.add("puzzle-wrong");
+          playSound('wrong');
         }
         feedbackText.innerText = currentQuestion.explanation;
         feedbackText.classList.remove("hide");
@@ -371,7 +444,9 @@ function renderHangmanQuestion(currentQuestion) {
 
     if (isComplete) {
       clearInterval(timerInterval);
+      if (timerBox) timerBox.classList.remove("warning");
       score++;
+      playSound('correct');
       disableKeyboard();
       feedbackText.innerText = "🎉 Adivinhou! " + currentQuestion.explanation;
       feedbackText.classList.remove("hide");
@@ -395,8 +470,10 @@ function renderHangmanQuestion(currentQuestion) {
 
       if (currentQuestion.secretWord.includes(letter)) {
         btn.classList.add("key-correct");
+        playSound('click');
       } else {
         btn.classList.add("key-wrong");
+        playSound('wrong');
         hangmanErrors++;
       }
 
@@ -404,6 +481,7 @@ function renderHangmanQuestion(currentQuestion) {
 
       if (hangmanErrors >= 5) {
         clearInterval(timerInterval);
+        if (timerBox) timerBox.classList.remove("warning");
         disableKeyboard();
         feedbackText.innerText = `❌ Forca! A palavra era ${currentQuestion.secretWord}. ` + currentQuestion.explanation;
         feedbackText.classList.remove("hide");
@@ -420,7 +498,7 @@ function renderHangmanQuestion(currentQuestion) {
   optionsElement.appendChild(wrapper);
 }
 
-// 4. Minigame: Jogo da Memória (Memory Game)
+// 4. Minigame: Jogo da Memória
 function renderMemoryQuestion(currentQuestion) {
   optionsElement.classList.remove("boolean-grid");
   memoryFlippedCards = [];
@@ -429,7 +507,6 @@ function renderMemoryQuestion(currentQuestion) {
   const grid = document.createElement("div");
   grid.classList.add("memory-grid");
 
-  // Embaralha as cartas
   const shuffledCards = [...currentQuestion.cards].sort(() => Math.random() - 0.5);
 
   shuffledCards.forEach(cardData => {
@@ -453,6 +530,7 @@ function renderMemoryQuestion(currentQuestion) {
         return;
       }
 
+      playSound('click');
       card.classList.add("flipped");
       memoryFlippedCards.push(card);
 
@@ -463,15 +541,18 @@ function renderMemoryQuestion(currentQuestion) {
           card2.classList.add("matched");
           memoryFlippedCards = [];
           memoryMatchedPairs++;
+          playSound('correct');
 
           if (memoryMatchedPairs === currentQuestion.cards.length / 2) {
             clearInterval(timerInterval);
+            if (timerBox) timerBox.classList.remove("warning");
             score++;
             feedbackText.innerText = "🧠 Excelente memória! " + currentQuestion.explanation;
             feedbackText.classList.remove("hide");
             nextButton.classList.remove("hide");
           }
         } else {
+          playSound('wrong');
           setTimeout(() => {
             card1.classList.remove("flipped");
             card2.classList.remove("flipped");
@@ -488,8 +569,6 @@ function renderMemoryQuestion(currentQuestion) {
 }
 
 // 5. Minigame: Super Alquimia Morfológica
-let superPuzzleSelected = [];
-
 function renderSuperPuzzleQuestion(currentQuestion) {
   optionsElement.classList.remove("boolean-grid");
   superPuzzleSelected = [];
@@ -497,13 +576,11 @@ function renderSuperPuzzleQuestion(currentQuestion) {
   const container = document.createElement("div");
   container.classList.add("super-puzzle-container");
 
-  // Frasco/Vaso de Síntese
   const flask = document.createElement("div");
   flask.classList.add("alchemy-flask");
   
   const flaskLabel = document.createElement("div");
   flaskLabel.classList.add("flask-label");
- 
 
   const wordDisplay = document.createElement("div");
   wordDisplay.classList.add("synthesized-word");
@@ -512,22 +589,20 @@ function renderSuperPuzzleQuestion(currentQuestion) {
   flask.appendChild(flaskLabel);
   flask.appendChild(wordDisplay);
 
-  // Botão de Limpar/Resetar Escolha
   const resetBtn = document.createElement("button");
   resetBtn.classList.add("btn-reset-flask");
   resetBtn.innerText = "🧹 Voltar";
   resetBtn.addEventListener("click", () => {
+    playSound('click');
     superPuzzleSelected = [];
     wordDisplay.innerText = "Clique nas peças para combinar...";
     wordDisplay.classList.remove("glow");
     Array.from(grid.children).forEach(btn => btn.classList.remove("used"));
   });
 
-  // Grade de Morfemas
   const grid = document.createElement("div");
   grid.classList.add("alchemy-grid");
 
-  // Embaralha as peças do desafio
   const shuffledMorphemes = [...currentQuestion.morphemes].sort(() => Math.random() - 0.5);
 
   shuffledMorphemes.forEach(item => {
@@ -538,28 +613,30 @@ function renderSuperPuzzleQuestion(currentQuestion) {
     chip.addEventListener("click", () => {
       if (chip.classList.contains("used") || superPuzzleSelected.length >= currentQuestion.correctOrder.length) return;
 
+      playSound('click');
       chip.classList.add("used");
       superPuzzleSelected.push(item.text);
 
       wordDisplay.innerText = superPuzzleSelected.join("");
       wordDisplay.classList.add("glow");
 
-      // Quando preencher a quantidade total necessária
       if (superPuzzleSelected.length === currentQuestion.correctOrder.length) {
         clearInterval(timerInterval);
+        if (timerBox) timerBox.classList.remove("warning");
 
         const isCorrect = superPuzzleSelected.every((val, idx) => val === currentQuestion.correctOrder[idx]);
 
         if (isCorrect) {
           flask.classList.add("alchemy-success");
           score++;
+          playSound('correct');
           feedbackText.innerText = "✨ REAÇÃO PERFEITA! " + currentQuestion.explanation;
         } else {
           flask.classList.add("alchemy-error");
+          playSound('wrong');
           feedbackText.innerText = "💥 FALHA NA SÍNTESE! A combinação correta era: " + currentQuestion.correctOrder.join("") + ". " + currentQuestion.explanation;
         }
 
-        // Desabilita os botões restantes
         Array.from(grid.children).forEach(btn => btn.classList.add("used"));
         resetBtn.disabled = true;
 
@@ -579,6 +656,7 @@ function renderSuperPuzzleQuestion(currentQuestion) {
 
 function resetState() {
   clearInterval(timerInterval);
+  if (timerBox) timerBox.classList.remove("warning");
   nextButton.classList.add("hide");
   feedbackText.classList.add("hide");
   while (optionsElement.firstChild) {
@@ -589,19 +667,29 @@ function resetState() {
 function startTimer() {
   timeLeft = TIME_LIMIT;
   timerText.innerText = timeLeft;
+  if (timerBox) timerBox.classList.remove("warning");
 
   timerInterval = setInterval(() => {
     timeLeft--;
     timerText.innerText = timeLeft;
 
+    // Quando faltarem 5 segundos ou menos: ativa o som de 'tick' e o efeito visual de alarme
+    if (timeLeft <= 5 && timeLeft > 0) {
+      playSound('tick');
+      if (timerBox) timerBox.classList.add("warning");
+    }
+
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
+      if (timerBox) timerBox.classList.remove("warning");
       timeOut();
     }
   }, 1000);
 }
 
 function timeOut() {
+  playSound('wrong');
+  if (timerBox) timerBox.classList.remove("warning");
   const currentQuestion = questions[currentQuestionIndex];
   feedbackText.innerText = "⏰ Tempo esgotado! " + currentQuestion.explanation;
   feedbackText.classList.remove("hide");
@@ -620,6 +708,7 @@ function timeOut() {
 
 function selectAnswer(e) {
   clearInterval(timerInterval);
+  if (timerBox) timerBox.classList.remove("warning");
   
   const selectedBtn = e.target;
   const isCorrect = selectedBtn.dataset.correct === "true";
@@ -628,8 +717,10 @@ function selectAnswer(e) {
   if (isCorrect) {
     selectedBtn.classList.add("correct");
     score++;
+    playSound('correct');
   } else {
     selectedBtn.classList.add("wrong");
+    playSound('wrong');
   }
 
   feedbackText.innerText = currentQuestion.explanation;
@@ -646,6 +737,7 @@ function selectAnswer(e) {
 }
 
 function handleNextButton() {
+  playSound('click');
   currentQuestionIndex++;
   if (currentQuestionIndex < questions.length) {
     showQuestion();
@@ -656,6 +748,7 @@ function handleNextButton() {
 
 function showScore() {
   clearInterval(timerInterval);
+  if (timerBox) timerBox.classList.remove("warning");
   quizBox.classList.add("hide");
   resultBox.classList.remove("hide");
 
@@ -671,45 +764,35 @@ function showScore() {
     resultIcon.innerText = "🏆";
     resultTitle.innerText = "Sensacional!";
     scoreElement.innerHTML = `Parabéns, <strong>${userName}</strong>!<br>Você dominou os conceitos da Morfologia! 🎈`;
+    playSound('victory');
     triggerConfetti();
   } else if (percentage >= 50) {
     resultIcon.innerText = "📖";
     resultTitle.innerText = "Muito Bem!";
     scoreElement.innerHTML = `Bom trabalho, <strong>${userName}</strong>!<br>Continue praticando para alcançar os 100%! ⭐`;
+    playSound('correct');
   } else {
     resultIcon.innerText = "💡";
     resultTitle.innerText = "Boa Tentativa!";
     scoreElement.innerHTML = `Não desista, <strong>${userName}</strong>!<br>Que tal dar uma revisada no assunto e tentar novamente? 😉`;
+    playSound('wrong');
   }
 }
 
-// Função para disparar a animação de confetes
 function triggerConfetti() {
   if (typeof confetti === "function") {
-    // Explosão central
     confetti({
       particleCount: 100,
       spread: 70,
       origin: { y: 0.6 }
     });
 
-    // Disparos contínuos das laterais para um efeito mais espetacular
     const duration = 2.5 * 1000;
     const end = Date.now() + duration;
 
     (function frame() {
-      confetti({
-        particleCount: 3,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 }
-      });
-      confetti({
-        particleCount: 3,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 }
-      });
+      confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
+      confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
 
       if (Date.now() < end) {
         requestAnimationFrame(frame);
@@ -726,4 +809,7 @@ nextButton.addEventListener("click", () => {
   }
 });
 
-restartButton.addEventListener("click", startQuiz);
+restartButton.addEventListener("click", () => {
+  playSound('click');
+  startQuiz();
+});
