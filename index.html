@@ -12,19 +12,23 @@
 
   <div class="quiz-container">
     <div id="welcome-box" class="card-box">
-      <!-- <div class="mascot">📚</div> -->
+      <div class="mascot"></div>
+      <span class="subject-badge">Língua Portuguesa - Prof. Lanuza</span>
       <h1>Quiz de Morfologia</h1>
       <p class="subtitle">Mostre o quanto você sabe sobre a estrutura das palavras!</p>
       
       <form id="start-form">
         <label for="username-input">Para começar, digite seu nome</label>
-        <input 
-          type="text" 
-          id="username-input" 
-          placeholder="Digite seu nome ou apelido..." 
-          required 
-          autocomplete="off"
-        />
+        <div class="input-wrapper">
+          <span class="input-icon"></span>
+          <input 
+            type="text" 
+            id="username-input" 
+            placeholder="Digite seu nome ou apelido..." 
+            required 
+            autocomplete="off"
+          />
+        </div>
         <button type="submit" class="btn-action btn-start">Começar Quiz!</button>
       </form>
     </div>
@@ -85,7 +89,7 @@
 
   </div>
 
-  <img src="IFBA.png" alt="Logo IFBA" class="ifba-logo">
+  <img src="IFBA2.png" alt="Logo IFBA" class="ifba-logo">
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="script.js"></script>
