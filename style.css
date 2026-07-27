@@ -6,14 +6,44 @@
 }
 
 body {
-  background-color: linear-gradient(135deg, #e3e7e4 0%, #f6f7f5 100%);
-  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 20px;
+  background-color: #f6f7f5;
+  position: relative;
+  overflow-x: hidden; /* Evita barras de rolagem por causa do fundo */
+}
+
+/* Criamos um fundo separado que usa aceleração de hardware */
+body::before {
+  content: "";
+  position: fixed;
+  top: -32px;  /* Margem extra para não cortar a animação */
+  left: -32px;
+  width: calc(100% + 64px);
+  height: calc(100% + 64px);
+  
+  /* Bolinhas */
+  background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+  background-size: 28px 28px;
+  
+  /* Força aceleração por GPU */
+  will-change: transform;
+  animation: moveDotsGPU 3s linear infinite;
+  z-index: -1; /* Fica atrás de todo o conteúdo do quiz */
+}
+
+/* Animação ultra leve usando transform */
+@keyframes moveDotsGPU {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(28px, 28px, 0); /* Mesmo tamanho do background-size */
+  }
 }
 
 .quiz-container {
@@ -47,6 +77,79 @@ body {
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+/* Badge de assunto */
+.subject-badge {
+  display: inline-block;
+  background-color: #e8f0fe;
+  color: #1e90ff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* Novo estilo do Título com mais contraste */
+h1 {
+  font-size: 2rem;
+  color: #4834d4;
+  margin-bottom: 8px;
+  text-shadow: none;
+}
+
+/* Campo de entrada com ícone interno */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
+#username-input {
+  width: 100%;
+  padding: 14px 14px 14px 45px; /* Espaço para o ícone */
+  font-size: 1.05rem;
+  border: 3px solid #70a1ff;
+  border-radius: 16px;
+  outline: none;
+  text-align: left;
+  background-color: #f1f2f6;
+  color: #2f3542;
+  transition: all 0.2s ease;
+}
+
+#username-input:focus {
+  background-color: #ffffff;
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 4px rgba(30, 144, 255, 0.2);
+}
+
+/* Botão de Inicio mais 3D */
+.btn-start {
+  background-color: #ff4757;
+  box-shadow: 0 6px 0 #d63031;
+  font-size: 1.25rem;
+}
+
+.btn-start:hover {
+  background-color: #ff6b81;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 0 #d63031;
+}
+
+.btn-start:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #d63031;
 }
 
 h1 {
@@ -631,9 +734,9 @@ label {
 /* LOGO IFBA NO CANTO INFERIOR DIREITO */
 .ifba-logo {
   position: fixed;
-  bottom: 60px;
+  bottom: 40px;
   right: 60px;
-  width: 70px; /* Ajuste o tamanho conforme necessário */
+  width: 230px; /* Ajuste o tamanho conforme necessário */
   height: auto;
   z-index: 1000;
   pointer-events: none; /* Garante que não atrapalhe os cliques na tela */
@@ -651,5 +754,27 @@ label {
     width: 80px;
     bottom: 10px;
     right: 10px;
+  }
+}
+
+/* EFEITO DE PRESSÃO NO CRONÔMETRO */
+.timer-badge {
+  transition: all 0.3s ease;
+}
+
+.timer-badge.warning {
+  background-color: #ff3838 !important;
+  box-shadow: 0 4px 0 #c0392b !important;
+  animation: pulse-urgency 0.5s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-urgency {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 0 #c0392b;
+  }
+  100% {
+    transform: scale(1.15);
+    box-shadow: 0 6px 12px rgba(255, 56, 56, 0.6);
   }
 }
